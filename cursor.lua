@@ -61,7 +61,6 @@ function cursor:update(dt)
   end
 
   if j:isDown(4) and self.targetWall and self.player.minions > 0 then
-    print("puller")
     self.targetWall.minions = self.targetWall.minions + 1
     self.player.minions = self.player.minions -1
   end
@@ -76,11 +75,13 @@ function cursor:draw()
 end
 
 function cursor:beginContact(b, coll)
-  self.targetWall = fixtureObjects[b]
+  if b.isWall then
+    self.targetWall = b
+  end
 end
 
 function cursor:endContact(b, coll)
-  if self.targetWall == fixtureObjects[b] then
+  if self.targetWall == b then
     self.targetWall = nil
   end
 end

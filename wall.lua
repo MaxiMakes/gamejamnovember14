@@ -23,6 +23,8 @@ function wall.new(x,y,dx,dy,player)
 
   new.hp = dx * dy
   new.player = player
+  new.isWall = true
+  new.minions = 0
 
   local newRange = {}
 
@@ -32,6 +34,7 @@ function wall.new(x,y,dx,dy,player)
   newRange.fixture:setSensor(true)
 
 
+  fixtureObjects[newRange.fixture] = newRange
   fixtureObjects[new.fixture] = new
   table.insert(allObjects, new)
 
@@ -42,6 +45,10 @@ function wall:draw()
   love.graphics.setColor(self.player.color)
   love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
   love.graphics.setColor(255,255,255)
+
+  for i = 1, self.minions do
+    love.graphics.circle("fill", self.body:getX() + i*5, self.body:getY(), 5, 5)
+  end
 end
 
 function wall.beginContact(a,b,coll)
