@@ -42,6 +42,9 @@ function love.update(dt)
     --print( ("player"..i))
 
     jx , jy ,_,_ = player["player"..i].joystick:getAxes()
+    if player["player"..i].joystick:isDown(3) then
+      player.buy("player"..i)
+    end
     player.move("player"..i, jx*player.speed*dt, jy*player.speed*dt)
   end
 
@@ -57,6 +60,10 @@ function love.draw()
   local joysticks = love.joystick.getJoysticks()
   for i, joystick in ipairs(joysticks) do
       love.graphics.print(joystick:getName(), 10, i * 20)
+  end
+  for i, v in ipairs(player.playernames) do
+     love.graphics.print(player[v].money, 40, i*40)
+     love.graphics.print(player[v].minions, 80, i*40)
   end
   --  love.graphics.print("Kohl!!!!!!!!")
   --  love.graphics.print(player.player1.joystick:getAxes())

@@ -38,7 +38,7 @@ end
 function player.buy(playername)
   if player[playername].money > minioncost then
     player[playername].money = player[playername].money -minioncost
-    player[playername].minions = player[playername].minions - minioncost
+    player[playername].minions = player[playername].minions + 1
   end
   if player[playername].money < minioncost then
     print "not enough money to buy minion!"
