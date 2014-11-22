@@ -39,6 +39,7 @@ function control:update(dt)
     self:f()
   end
 
+  --[[
   --react to players around
   if #self.playersAround == 1 then
     local p = self.playersAround[1]
@@ -55,6 +56,14 @@ function control:update(dt)
       self.ownership = takeoverSpeed
     end
   end
+  --]]
+  --[[ 
+  if #self.playersAround == 1 then
+    local p = self.playersAround[1]
+    p.money = self.storage
+    self.storage = 0
+  end
+  --]]
 end
 
 function control:draw()

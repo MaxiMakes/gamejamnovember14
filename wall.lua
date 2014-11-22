@@ -7,7 +7,7 @@ function wall.new(x,y,dx,dy,player)
   local new = {}
   setmetatable(new,wall.mt)
 
-  new.body = love.physics.newBody(world, x+dx/2, y+dy/2) 
+  new.body = love.physics.newBody(world, x+dx/2, y+dy/2, "static") 
   new.shape = love.physics.newRectangleShape(dx, dy)
   new.fixture = love.physics.newFixture(new.body, new.shape) --attach shape to body
 

@@ -39,7 +39,7 @@ end
 
 function love.update(dt)
   world:update(dt) --this puts the world into motion
-  player:update(dt)
+  player.update(dt)
   for i,v in ipairs(controlPoints) do
     v:update(dt)
   end

@@ -1,3 +1,4 @@
+local cursor = require 'cursor'
 local player = {}
 --config
 player.radius = 16
@@ -22,8 +23,9 @@ function player.load()
 end
 
 function player.update(dt)
-
-
+  for i, v in ipairs(player.playernames) do
+      player[v].cursor:update(dt)
+  end
 end
 
 function player.new(pname, px , py)
@@ -44,6 +46,8 @@ function player.new(pname, px , py)
   end
   counter = counter + 1
 
+  player[pname].cursor = cursor.new(player[pname])
+
   return player[pname]
 end
 
@@ -58,6 +62,7 @@ end
 function player.draw()
   for i, v in ipairs(player.playernames) do
       love.graphics.draw(player.image, player[v].body:getX() - player.image:getWidth()/2, player[v].body:getY() - player.image:getHeight()/2)
+      player[v].cursor:draw()
   end
 end
 
