@@ -3,9 +3,9 @@ local wall = require 'wall'
 local cursor = {}
 cursor.mt = { __index = cursor }
 
-local function placeWall(x,y,dx,dy)
+local function placeWall(x,y,dx,dy, ...)
   if math.abs(round(dx)) > 0 and math.abs(round(dy)) > 0 then
-    return wall.new(x,y,dx,dy)
+    return wall.new(x,y,dx,dy, ...)
   end
 end
 
@@ -26,6 +26,12 @@ function cursor.new(player)
   newCursor.endDragX = 0
   newCursor.endDragY = 0
 
+
+  newCursor.isPlacingWall = false
+
+  table.insert(allObjects, newCursor)
+  fixtureObjects[newCursor.fixture] = newCursor
+
   return newCursor
 end
 
@@ -39,19 +45,25 @@ function cursor:update(dt)
   self.endDragX = self.body:getX()
 
   if not j:isDown(8) then
-    if isPlacingWall then
+    if self.isPlacingWall then
       local w = placeWall(self.startDragX, self.startDragY, self.endDragX - self.startDragX, self.endDragY - self.startDragY, self.player)
       if w then
         table.insert(walls,w)
       end
 
-      isPlacingWall = false
+      self.isPlacingWall = false
     end
 
     self.startDragX = self.body:getX()
     self.startDragY = self.body:getY()
   else
-    isPlacingWall = true
+    self.isPlacingWall = true
+  end
+
+  if j:isDown(4) and self.targetWall and self.player.minions > 0 then
+    print("puller")
+    self.targetWall.minions = self.targetWall.minions + 1
+    self.player.minions = self.player.minions -1
   end
 
   -- späta if love.physics.getDistance(self.fixture, self.player.fixture) > maxDistance then
@@ -61,6 +73,16 @@ function cursor:draw()
   love.graphics.circle("fill", self.body:getX(), self.body:getY(), 10, 10) 
   love.graphics.rectangle("fill", round(self.startDragX), round(self.startDragY), round(self.endDragX-self.startDragX), round(self.endDragY-self.startDragY))
   love.graphics.print(self.player.joystick:getAxes())
+end
+
+function cursor:beginContact(b, coll)
+  self.targetWall = fixtureObjects[b]
+end
+
+function cursor:endContact(b, coll)
+  if self.targetWall == fixtureObjects[b] then
+    self.targetWall = nil
+  end
 end
 
 return cursor

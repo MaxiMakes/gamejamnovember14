@@ -10,6 +10,13 @@ player.speed = 10000
 local counter = 1
 jcounter = 0
 
+local colors = {
+  {255,0,0},
+  {0,255,0},
+  {0,0,255},
+  {255,255,255}
+}
+
 function player.load()
   gr = love.graphics
   player.image = love.graphics.newImage("player.png")
@@ -18,7 +25,7 @@ function player.load()
 
   end
   for i = 1 , jcounter, 1 do
-    player.new("player"..i, 100, 100)
+    player.new("player"..i, 100, 100, i)
   end
 end
 
@@ -28,7 +35,7 @@ function player.update(dt)
   end
 end
 
-function player.new(pname, px , py)
+function player.new(pname, px , py, i)
   player[pname] = {}
   table.insert(player.playernames, pname)
   player[pname].name = pname
@@ -38,6 +45,9 @@ function player.new(pname, px , py)
   player[pname].body:setLinearDamping(5)
   player[pname].money = player.money
   player[pname].minions = player.minions
+  player[pname].color = colors[i]
+  fixtureObjects[player[pname].fix] = player[pname]
+  table.insert(allObjects,player[pname])
 
   for i, v in ipairs(love.joystick.getJoysticks()) do
     if counter == i then
@@ -47,6 +57,9 @@ function player.new(pname, px , py)
   counter = counter + 1
 
   player[pname].cursor = cursor.new(player[pname])
+
+  player[pname].beginContact = function () end
+  player[pname].endContact = function () end
 
   return player[pname]
 end
@@ -61,8 +74,10 @@ end
 
 function player.draw()
   for i, v in ipairs(player.playernames) do
-      love.graphics.draw(player.image, player[v].body:getX() - player.image:getWidth()/2, player[v].body:getY() - player.image:getHeight()/2)
-      player[v].cursor:draw()
+    love.graphics.setColor(player[v].color)
+    love.graphics.draw(player.image, player[v].body:getX() - player.image:getWidth()/2, player[v].body:getY() - player.image:getHeight()/2)
+    player[v].cursor:draw()
+    love.graphics.setColor(255,255,255)
   end
 end
 

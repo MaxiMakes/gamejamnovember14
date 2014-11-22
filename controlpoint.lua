@@ -26,6 +26,10 @@ function control.new(x,y,dx,dy,f,interval)
   newPoint.fixture = love.physics.newFixture(newPoint.body, newPoint.shape) --attach shape to body
   newPoint.fixture:setSensor(true)
 
+
+  fixtureObjects[newPoint.fixture] = newPoint
+  table.insert(allObjects,newPoint)
+
   return newPoint
 end
 
@@ -80,7 +84,7 @@ function control:ownedBy(player)
   self.owner = player
 end
 
-function control.beginContact(self, b, coll)
+function control:beginContact(b, coll)
   for i,v in ipairs(self.playersAround) do
     if v == b then
       return
@@ -90,7 +94,7 @@ function control.beginContact(self, b, coll)
   table.insert(self.playersAround,b)
 end
 
-function control.endContact(self, b, coll)
+function control:endContact(b, coll)
   for i,v in ipairs(self.playersAround) do
     if v == b then
       table.remove(self.playersAround,i)

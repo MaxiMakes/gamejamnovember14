@@ -7,6 +7,9 @@ function round(num, mult)
   return math.floor(num / mult + 0.5 ) * mult
 end
 
+fixtureObjects = {}
+allObjects = {}
+
 function love.load()
   love.physics.setMeter(64) --the height of a meter our worlds will be 64px
   world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with
@@ -19,15 +22,6 @@ function love.load()
   --creating player
 
   player.load()
-
-  objects = {} -- table to hold all our physical objects
-
-  --let's create a ball
-  objects.ball = {}
-  objects.ball.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around
-  objects.ball.shape = love.physics.newCircleShape( 20) --the ball's shape has a radius of 20
-  objects.ball.fixture = love.physics.newFixture(objects.ball.body, objects.ball.shape, 1) -- Attach fixture to body and give it a density of 1.
-  --objects.ball.fixture:setRestitution(0.9) --let the ball bounce
 
   love.graphics.setBackgroundColor(104, 136, 248) --set the background color to a nice blue
   love.window.setMode(650, 650) --set the window dimensions to 650 by 650 with no fullscreen, vsync on,
@@ -55,8 +49,6 @@ end
 
 function love.draw()
   player.draw()
-  love.graphics.print('Hello World!', 400, 300)
-  love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
 
   for i,v in ipairs(controlPoints) do
     v:draw()
@@ -95,6 +87,7 @@ function love.keypressed(key, isrepeat)
 end
 
 function beginContact(a, b, coll)
+  --[[
   for i,v in ipairs(controlPoints) do
     if a == v.fixture then
       v.beginContact(v, b, coll)
@@ -102,14 +95,34 @@ function beginContact(a, b, coll)
       v.beginContact(v, a, coll)
     end
   end
+  --]]
+
+  for i,v in ipairs(allObjects) do
+    if a == v.fixture then
+      v:beginContact(fixtureObjects[b], coll)
+    elseif b == v.fixture then
+      v:beginContact(fixtureObjects[a], coll)
+    end
+  end
 end
 
 function endContact(a, b, coll)
+  --[[
    for i,v in ipairs(controlPoints) do
     if a == v.fixture then
       v.endContact(v, b, coll)
     elseif b == v.fixture then
       v.endContact(v, a, coll)
+    end
+  end
+  --]]
+
+
+  for i,v in ipairs(allObjects) do
+    if a == v.fixture then
+      v:endContact(fixtureObjects[b], coll)
+    elseif b == v.fixture then
+      v:endContact(fixtureObjects[a], coll)
     end
   end
 end
