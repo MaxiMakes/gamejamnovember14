@@ -35,14 +35,6 @@ function love.update(dt)
   end
 end
 
-function love.keypressed(key)
-  if(key == ' ') then
-    player.move("player1", 500, 500)
-  end
-
-
-end
-
 function love.draw()
   player.draw()
   love.graphics.print('Hello World!', 400, 300)
@@ -54,9 +46,11 @@ function love.draw()
 end
 
 function love.keypressed(key)
-   if key == "escape" then
-      love.event.quit()
-   end
+  if key == "escape" then
+    love.event.quit()
+  elseif(key == ' ') then
+    player.move("player1", 500, 500)
+  end
 end
 
 function beginContact(a, b, coll)
