@@ -3,14 +3,19 @@ local control = require ("controlpoint")
 
 function love.load()
   love.physics.setMeter(64) --the height of a meter our worlds will be 64px
-  world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with 
+  world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with
   world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
   --creating player
-  player.new("player1", 100, 100)
+
   player.load()
 
   objects = {} -- table to hold all our physical objects
+
+  --Joystick
+    p1joystick = nil
+    p2joystick = nil
+
 
   --let's create a ball
   objects.ball = {}
@@ -20,19 +25,30 @@ function love.load()
   --objects.ball.fixture:setRestitution(0.9) --let the ball bounce
 
   love.graphics.setBackgroundColor(104, 136, 248) --set the background color to a nice blue
-  love.window.setMode(650, 650) --set the window dimensions to 650 by 650 with no fullscreen, vsync on, 
+  love.window.setMode(650, 650) --set the window dimensions to 650 by 650 with no fullscreen, vsync on,
 
-  -- test the control points 
+  -- test the control points
   controlPoints = {}
   table.insert(controlPoints, control.new(650/2,650/2,10,10))
 end
 
 function love.update(dt)
   world:update(dt) --this puts the world into motion
-
+  player:update(dt)
   for i,v in ipairs(controlPoints) do
     v:update(dt)
   end
+
+
+  for i = 1, jcounter, 1 do
+    --
+    --print( ("player"..i))
+
+    jx , jy ,_,_ = player["player"..i].joystick:getAxes()
+    player.move("player"..i, jx*player.speed*dt, jy*player.speed*dt)
+  end
+
+
 end
 
 function love.draw()
@@ -43,13 +59,34 @@ function love.draw()
   for i,v in ipairs(controlPoints) do
     v:draw()
   end
+
+
+
+  local joysticks = love.joystick.getJoysticks()
+  for i, joystick in ipairs(joysticks) do
+      love.graphics.print(joystick:getName(), 10, i * 20)
+  end
+  --  love.graphics.print("Kohl!!!!!!!!")
+  --  love.graphics.print(player.player1.joystick:getAxes())
+  --  love.graphics.print(p1joystick:getGamepadAxis("leftx"))
+  --  love.graphics.print(p1joystick:getGamepadAxis("lefty"))
+  --  love.graphics.print(p1joystick:getGamepadAxis("righty"))
+
+
 end
 
-function love.keypressed(key)
+function love.keypressed(key, isrepeat)
+
   if key == "escape" then
     love.event.quit()
-  elseif(key == ' ') then
-    player.move("player1", 500, 500)
+  elseif(key == 'up') then
+    player.move("player1", 0, -500)
+  elseif(key == 'down') then
+    player.move("player1", 0, 500)
+  elseif(key == 'right') then
+    player.move("player1", 500, 0)
+  elseif(key == 'left') then
+    player.move("player1", -500, 0)
   end
 end
 
@@ -73,10 +110,12 @@ function endContact(a, b, coll)
   end
 end
 
+
+
 function preSolve(a, b, coll)
-   
+
 end
 
 function postSolve(a, b, coll, normalimpulse1, tangentimpulse1, normalimpulse2, tangentimpulse2)
-   
+
 end
