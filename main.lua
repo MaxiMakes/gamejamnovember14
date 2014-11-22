@@ -94,44 +94,17 @@ function love.keypressed(key, isrepeat)
 end
 
 function beginContact(a, b, coll)
-  --[[
-  for i,v in ipairs(controlPoints) do
-    if a == v.fixture then
-      v.beginContact(v, b, coll)
-    elseif b == v.fixture then
-      v.beginContact(v, a, coll)
-    end
-  end
-  --]]
-
-  for i,v in ipairs(allObjects) do
-    if a == v.fixture then
-      v:beginContact(fixtureObjects[b], coll)
-    elseif b == v.fixture then
-      v:beginContact(fixtureObjects[a], coll)
-    end
-  end
+  local v = fixtureObjects[a]
+  local w = fixtureObjects[b]
+  v:beginContact(w,coll)
+  w:beginContact(v,coll)
 end
 
 function endContact(a, b, coll)
-  --[[
-   for i,v in ipairs(controlPoints) do
-    if a == v.fixture then
-      v.endContact(v, b, coll)
-    elseif b == v.fixture then
-      v.endContact(v, a, coll)
-    end
-  end
-  --]]
-
-
-  for i,v in ipairs(allObjects) do
-    if a == v.fixture then
-      v:endContact(fixtureObjects[b], coll)
-    elseif b == v.fixture then
-      v:endContact(fixtureObjects[a], coll)
-    end
-  end
+  local v = fixtureObjects[a]
+  local w = fixtureObjects[b]
+  v:endContact(w,coll)
+  w:endContact(v,coll)
 end
 
 

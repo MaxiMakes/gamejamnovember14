@@ -33,10 +33,28 @@ function wall.new(x,y,dx,dy,player)
   newRange.fixture = love.physics.newFixture(newRange.body, newRange.shape) --attach shape to body
   newRange.fixture:setSensor(true)
 
+  new.inRange = {}
+
+  function newRange.beginContact(b,coll)
+    if not (b == new) then
+      table.insert(new.inRange, b)
+    end
+  end
+
+  function newRange.endContact(b,coll)
+    for i,v in ipairs(new.inRange) do
+      if v == b then
+        table.remove(new.inRange,i)
+        return
+      end
+    end
+  end
+
 
   fixtureObjects[newRange.fixture] = newRange
   fixtureObjects[new.fixture] = new
   table.insert(allObjects, new)
+  table.insert(allObjects, newRange)
 
   return new
 end
@@ -49,6 +67,8 @@ function wall:draw()
   for i = 1, self.minions do
     love.graphics.circle("fill", self.body:getX() + i*5, self.body:getY(), 5, 5)
   end
+
+  love.graphics.print(#self.inRange, 200, 100)
 end
 
 function wall.beginContact(a,b,coll)
