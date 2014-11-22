@@ -8,6 +8,7 @@ player.money = 100
 player.minions = 10
 player.speed = 10000
 local counter = 1
+local minioncost = 1
 jcounter = 0
 
 local colors = {
@@ -32,6 +33,15 @@ end
 function player.update(dt)
   for i, v in ipairs(player.playernames) do
       player[v].cursor:update(dt)
+  end
+end
+function player.buy(playername)
+  if player[playername].money > minioncost then
+    player[playername].money = player[playername].money -minioncost
+    player[playername].minions = player[playername].minions - minioncost
+  end
+  if player[playername].money < minioncost then
+    print "not enough money to buy minion!"
   end
 end
 
