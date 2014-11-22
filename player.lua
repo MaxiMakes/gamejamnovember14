@@ -44,6 +44,7 @@ function player.new(pname, px , py)
   end
   counter = counter + 1
 
+  return player[pname]
 end
 
 

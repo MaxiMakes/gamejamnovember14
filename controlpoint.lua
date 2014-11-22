@@ -12,6 +12,8 @@ function control.new(x,y,dx,dy,f,interval)
   local newPoint = {}
   setmetatable(newPoint,control.mt)
 
+  --TODO: masken machen, damit das ganze nur mit spieler kollidiert
+
   newPoint.storage = 0
   newPoint.t = 0
   newPoint.f = f or defaultF

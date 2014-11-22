@@ -1,21 +1,26 @@
 local player = require 'player'
-local control = require ("controlpoint")
+local control = require 'controlpoint'
+local cursor = require 'cursor'
+
+function round(num, mult)
+  mult = mult or 30
+  return math.floor(num / mult + 0.5 ) * mult
+end
 
 function love.load()
   love.physics.setMeter(64) --the height of a meter our worlds will be 64px
   world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with
   world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
+  joysticks = love.joystick.getJoysticks( )
+
+  walls = {}
+
   --creating player
 
   player.load()
 
   objects = {} -- table to hold all our physical objects
-
-  --Joystick
-    p1joystick = nil
-    p2joystick = nil
-
 
   --let's create a ball
   objects.ball = {}
@@ -39,15 +44,12 @@ function love.update(dt)
     v:update(dt)
   end
 
-
   for i = 1, jcounter, 1 do
-    --
     --print( ("player"..i))
 
     jx , jy ,_,_ = player["player"..i].joystick:getAxes()
     player.move("player"..i, jx*player.speed*dt, jy*player.speed*dt)
   end
-
 
 end
 
@@ -60,8 +62,6 @@ function love.draw()
     v:draw()
   end
 
-
-
   local joysticks = love.joystick.getJoysticks()
   for i, joystick in ipairs(joysticks) do
       love.graphics.print(joystick:getName(), 10, i * 20)
@@ -72,6 +72,10 @@ function love.draw()
   --  love.graphics.print(p1joystick:getGamepadAxis("lefty"))
   --  love.graphics.print(p1joystick:getGamepadAxis("righty"))
 
+
+  for i,v in ipairs(walls) do
+    v:draw()
+  end
 
 end
 
