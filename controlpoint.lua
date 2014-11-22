@@ -4,8 +4,8 @@ control.mt = { __index = control }
 local takeoverSpeed = 10
 
 local function defaultF(self)
-  self.storage = self.storage + 10 
-  return self.storage 
+  self.storage = self.storage + 10
+  return self.storage
 end
 
 function control.new(x,y,dx,dy,f,interval)
@@ -21,7 +21,7 @@ function control.new(x,y,dx,dy,f,interval)
   newPoint.playersAround = {}
   newPoint.ownership = 0
 
-  newPoint.body = love.physics.newBody(world, x+dx/2, y+dy/2) 
+  newPoint.body = love.physics.newBody(world, x+dx/2, y+dy/2)
   newPoint.shape = love.physics.newRectangleShape(dx, dy)
   newPoint.fixture = love.physics.newFixture(newPoint.body, newPoint.shape) --attach shape to body
   newPoint.fixture:setSensor(true)
@@ -61,13 +61,10 @@ function control:update(dt)
     end
   end
   --]]
-  --[[ 
   if #self.playersAround == 1 then
-    local p = self.playersAround[1]
-    p.money = self.storage
+    self.playersAround[1].money = self.playersAround[1].money + self.storage
     self.storage = 0
   end
-  --]]
 end
 
 function control:draw()
