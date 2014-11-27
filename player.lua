@@ -9,7 +9,8 @@ player.minions = 10
 player.speed = 10000
 local counter = 1
 local minioncost = 1
-jcounter = 0
+
+jcounter = 0 --used to list the gamepads
 
 local colors = {
   {255,0,0},
@@ -21,10 +22,12 @@ local colors = {
 function player.load()
   gr = love.graphics
   player.image = love.graphics.newImage("player.png")
+
+  --counts the controller
   for i, v in ipairs(love.joystick.getJoysticks()) do
     jcounter = i
-
   end
+  --creates a player for each controller
   for i = 1 , jcounter, 1 do
     player.new("player"..i, 100, 100, i)
   end
@@ -36,7 +39,7 @@ function player.update(dt)
   end
 end
 function player.buy(playername)
-  if player[playername].money > minioncost then
+  if player[playername].money >= minioncost then
     player[playername].money = player[playername].money -minioncost
     player[playername].minions = player[playername].minions + 1
   end
@@ -59,6 +62,7 @@ function player.new(pname, px , py, i)
   fixtureObjects[player[pname].fix] = player[pname]
   table.insert(allObjects,player[pname])
 
+  --assings a free controller to a player
   for i, v in ipairs(love.joystick.getJoysticks()) do
     if counter == i then
       player[pname].joystick = v

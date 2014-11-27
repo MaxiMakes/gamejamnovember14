@@ -39,9 +39,8 @@ function love.update(dt)
   end
 
   for i = 1, jcounter, 1 do
-    --print( ("player"..i))
-
     jx , jy ,_,_ = player["player"..i].joystick:getAxes()
+
     if player["player"..i].joystick:isDown(3) then
       player.buy("player"..i)
     end
@@ -65,12 +64,6 @@ function love.draw()
      love.graphics.print(player[v].money, 40, i*40)
      love.graphics.print(player[v].minions, 80, i*40)
   end
-  --  love.graphics.print("Kohl!!!!!!!!")
-  --  love.graphics.print(player.player1.joystick:getAxes())
-  --  love.graphics.print(p1joystick:getGamepadAxis("leftx"))
-  --  love.graphics.print(p1joystick:getGamepadAxis("lefty"))
-  --  love.graphics.print(p1joystick:getGamepadAxis("righty"))
-
 
   for i,v in ipairs(walls) do
     v:draw()
@@ -82,14 +75,6 @@ function love.keypressed(key, isrepeat)
 
   if key == "escape" then
     love.event.quit()
-  elseif(key == 'up') then
-    player.move("player1", 0, -500)
-  elseif(key == 'down') then
-    player.move("player1", 0, 500)
-  elseif(key == 'right') then
-    player.move("player1", 500, 0)
-  elseif(key == 'left') then
-    player.move("player1", -500, 0)
   end
 end
 
