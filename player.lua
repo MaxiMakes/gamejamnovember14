@@ -29,7 +29,7 @@ function player.load()
   end
   --creates a player for each controller
   for i = 1 , jcounter, 1 do
-    player.new("player"..i, 100, 100, i)
+    player.new("player"..i, 100+i*10, 100+i*10, i)
   end
 end
 
