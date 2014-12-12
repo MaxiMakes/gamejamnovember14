@@ -61,7 +61,7 @@ function control:update(dt)
     end
   end
   --]]
-  if #self.playersAround == 1 then
+  if #self.playersAround == 1 and self.playersAround[1].money then
     self.playersAround[1].money = self.playersAround[1].money + self.storage
     self.storage = 0
   end

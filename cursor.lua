@@ -12,10 +12,10 @@ end
 function cursor.new(player)
   local newCursor = {}
   setmetatable(newCursor, cursor.mt)
-  
+
   newCursor.player = player
 
-  newCursor.body = love.physics.newBody(world, player.body:getX(), player.body:getY(), "dynamic") 
+  newCursor.body = love.physics.newBody(world, player.body:getX(), player.body:getY(), "dynamic")
   newCursor.body:setLinearDamping(10)
   newCursor.shape = love.physics.newCircleShape(10)
   newCursor.fixture = love.physics.newFixture(newCursor.body, newCursor.shape) --attach shape to body
@@ -36,8 +36,9 @@ function cursor.new(player)
 end
 
 function cursor:update(dt)
+
   local j = self.player.joystick
-  local _,_,dx,dy = j:getAxes() 
+  local _,_,dy,dx = j:getAxes()
   self.body:applyForce(dx*dt*10000,dy*dt*10000)
 
 
@@ -65,11 +66,14 @@ function cursor:update(dt)
     self.player.minions = self.player.minions -1
   end
 
-  -- späta if love.physics.getDistance(self.fixture, self.player.fixture) > maxDistance then
+  -- später if love.physics.getDistance(self.fixture, self.player.fixture) > maxDistance then
 end
 
 function cursor:draw()
-  love.graphics.circle("fill", self.body:getX(), self.body:getY(), 10, 10) 
+  love.graphics.setColor(5,24,255)
+  love.graphics.circle("fill", self.body:getX(), self.body:getY(), 10+5, 10+5)
+  love.graphics.setColor(255,0,0)
+  love.graphics.circle("fill", self.body:getX(), self.body:getY(), 10, 10)
   love.graphics.rectangle("fill", round(self.startDragX), round(self.startDragY), round(self.endDragX-self.startDragX), round(self.endDragY-self.startDragY))
   love.graphics.print(self.player.joystick:getAxes())
 end

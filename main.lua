@@ -15,9 +15,10 @@ function love.load()
   world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with
   world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
-  joysticks = love.joystick.getJoysticks( )
+  joysticks = love.joystick.getJoysticks()
 
   walls = {}
+  players = {}
 
   --creating player
 
@@ -33,41 +34,55 @@ end
 
 function love.update(dt)
   world:update(dt) --this puts the world into motion
-  player.update(dt)
+  player:update(dt)
   for i,v in ipairs(controlPoints) do
     v:update(dt)
   end
 
-  for i = 1, jcounter, 1 do
-    jx , jy ,_,_ = player["player"..i].joystick:getAxes()
+  --loop for player actions
 
-    if player["player"..i].joystick:isDown(3) then
-      player.buy("player"..i)
+  for i, v in ipairs(players) do
+    jx , jy ,_,_ = v.joystick:getAxes()
+
+    if v.joystick:isDown(3) then
+      player.buy(v)
     end
-    player.move("player"..i, jx*player.speed*dt, jy*player.speed*dt)
+    if v.joystick:isDown(1) then
+      v.cursor.body:setX(v.body:getX())
+      v.cursor.body:setY(v.body:getY())
+    end
+    player.move(jx*player.speed*dt, jy*player.speed*dt, v)
   end
+
 
 end
 
 function love.draw()
-  player.draw()
-
-  for i,v in ipairs(controlPoints) do
-    v:draw()
-  end
 
   local joysticks = love.joystick.getJoysticks()
+
   for i, joystick in ipairs(joysticks) do
       love.graphics.print(joystick:getName(), 10, i * 20)
   end
-  for i, v in ipairs(player.playernames) do
-     love.graphics.print(player[v].money, 40, i*40)
-     love.graphics.print(player[v].minions, 80, i*40)
+
+  for i, v in ipairs(players) do
+     love.graphics.print("Player".. i .."'s'" .. "Money: " .. v.money, 40, i*10)
+     love.graphics.print("Player".. i .."'s'" .. "Minions: " .. v.minions, 80, i*10+20)
   end
+  --draw gameobjects
 
   for i,v in ipairs(walls) do
     v:draw()
   end
+  for i,v in ipairs(controlPoints) do
+    v:draw()
+  end
+
+  for i,v in ipairs(players) do
+    player.draw()
+  end
+
+
 
 end
 
@@ -75,6 +90,19 @@ function love.keypressed(key, isrepeat)
 
   if key == "escape" then
     love.event.quit()
+  end
+
+  for i,v in ipairs(players) do
+
+    if key == "right" then
+      player:move(10*100,0,v)
+    elseif key == "left" then
+      player:move(-10*100,0,v)
+    elseif key == "up" then
+      player:move(0,-10*100,v)
+    elseif key == "down" then
+      player:move(0,10*100,v)
+    end
   end
 end
 
