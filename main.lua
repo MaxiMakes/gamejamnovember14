@@ -45,6 +45,14 @@ function love.update(dt)
   for i,v in ipairs(controlPoints) do
     v:update(dt)
   end
+
+  for i,v in ipairs(walls) do
+    if v.minions < 0 then
+      table.remove(v.sensor)
+      table.remove(v)
+    end
+  end
+
   for i,v in ipairs(players) do
     v.sensor.body:setX(v.body:getX())
     v.sensor.body:setY(v.body:getY())
@@ -58,20 +66,23 @@ function love.update(dt)
     --loop for damage player vs wall
   for i, p in ipairs(players) do
     for j, w in ipairs(walls) do
-      print("vor if"..w.minions)
       distance, _, _, _, _ = love.physics.getDistance(p.fixture, w.fixture)
-      if distance < player.range then
+      if distance < player.range and w.player ~= p then
         player.shoot(w,p)
-        print("nach if"..w.minions)
-        break
-      end
-      if p.sensor.inSensor[w] == true then
-        player.shoot(w,p)
-        print("nach if"..w.minions)
         break
       end
     end
   end
+  for i, p in ipairs(players) do
+    for j, w in ipairs(players) do
+      distance, _, _, _, _ = love.physics.getDistance(p.fixture, w.fixture)
+      if distance < player.range and w ~= v then
+        player.shoot(w,p)
+        break
+      end
+    end
+  end
+
 
 
   for i, v in ipairs(players) do
