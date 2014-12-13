@@ -24,7 +24,7 @@ function player.load()
   player.image = love.graphics.newImage("player.png")
 
   --counts the controller
-  for i, v in ipairs(love.joystick.getJoysticks()) do
+  for i, v in ipairs(joysticks) do
     jcounter = i
   end
   --creates a player for each controller
@@ -69,7 +69,7 @@ function player.new(pname, px , py, i)
 
 
   --assings a free controller to a player
-  for i, v in ipairs(love.joystick.getJoysticks()) do
+  for i, v in ipairs(joysticks) do
     if counter == i then
       newPlayer.joystick = v
     end

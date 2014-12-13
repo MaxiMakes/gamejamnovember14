@@ -1,6 +1,7 @@
 local player = require 'player'
 local control = require 'controlpoint'
 local cursor = require 'cursor'
+local controller = require 'controller'
 
 function round(num, mult)
   mult = mult or 30
@@ -15,7 +16,10 @@ function love.load()
   world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with
   world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 
-  joysticks = love.joystick.getJoysticks()
+  --joysticks = love.joystick.getJoysticks()
+  print( controller.newKeyboard("up","down","left","right","w","s","a","d","y","x","c") )
+  --function controller.newKeyboard(up,down,left,right,up2,down2,left2,right2,a,b,c)
+  joysticks = { controller.newKeyboard("up","down","left","right","w","s","a","d","y","x","c") } 
 
   walls = {}
   players = {}
@@ -23,6 +27,7 @@ function love.load()
   --creating player
 
   player.load()
+
 
   love.graphics.setBackgroundColor(104, 136, 248) --set the background color to a nice blue
   love.window.setMode(650, 650) --set the window dimensions to 650 by 650 with no fullscreen, vsync on,
@@ -44,10 +49,10 @@ function love.update(dt)
   for i, v in ipairs(players) do
     jx , jy ,_,_ = v.joystick:getAxes()
 
-    if v.joystick:isDown(3) then
+    if v.joystick:isDown("c") then
       player.buy(v)
     end
-    if v.joystick:isDown(1) then
+    if v.joystick:isDown("a") then
       v.cursor.body:setX(v.body:getX())
       v.cursor.body:setY(v.body:getY())
     end
@@ -95,13 +100,13 @@ function love.keypressed(key, isrepeat)
   for i,v in ipairs(players) do
 
     if key == "right" then
-      player:move(10*100,0,v)
+      player.move(10*100,0,v)
     elseif key == "left" then
-      player:move(-10*100,0,v)
+      player.move(-10*100,0,v)
     elseif key == "up" then
-      player:move(0,-10*100,v)
+      player.move(0,-10*100,v)
     elseif key == "down" then
-      player:move(0,10*100,v)
+      player.move(0,10*100,v)
     end
   end
 end

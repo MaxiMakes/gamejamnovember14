@@ -38,14 +38,14 @@ end
 function cursor:update(dt)
 
   local j = self.player.joystick
-  local _,_,dy,dx = j:getAxes()
+  local _,_,dx,dy = j:getAxes()
   self.body:applyForce(dx*dt*10000,dy*dt*10000)
 
 
   self.endDragY = self.body:getY()
   self.endDragX = self.body:getX()
 
-  if not j:isDown(8) then
+  if not j:isDown("b") then
     if self.isPlacingWall then
       local w = placeWall(self.startDragX, self.startDragY, self.endDragX - self.startDragX, self.endDragY - self.startDragY, self.player)
       if w then
@@ -61,7 +61,7 @@ function cursor:update(dt)
     self.isPlacingWall = true
   end
 
-  if j:isDown(4) and self.targetWall and self.player.minions > 0 then
+  if j:isDown("a") and self.targetWall and self.player.minions > 0 then
     self.targetWall.minions = self.targetWall.minions + 1
     self.player.minions = self.player.minions -1
   end
