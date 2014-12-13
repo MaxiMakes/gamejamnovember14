@@ -91,7 +91,7 @@ function cursor:endContact(b, coll)
 end
 
 function cursor:placeMinion(wall)
-  if self.player.joystick:isDown("a") and wall and self.player.minions > 0 and wall.blocks > wall.minions then
+  if self.player.joystick:isDown("a") and wall and self.player.minions > 0 and wall.blocks > wall.minions and wall.player == self.player then
     wall.minions = wall.minions + 1
     self.player.minions = self.player.minions -1
   end

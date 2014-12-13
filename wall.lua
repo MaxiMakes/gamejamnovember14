@@ -1,3 +1,6 @@
+require 'util'
+local sensor = require 'sensor'
+
 local wall = {}
 wall.mt = { __index = wall }
 wall.cost = 10
@@ -37,43 +40,18 @@ function wall.new(x,y,dx,dy,player)
   new.minions = 0
   new.blocks = blocks
 
-  local newRange = {}
+  local body = love.physics.newBody(world, new.body:getX(), new.body:getY())
+  local shape = love.physics.newCircleShape(math.max(dx,dy)*2)
 
-  newRange.body = love.physics.newBody(world, new.body:getX(), new.body:getY())
-  newRange.shape = love.physics.newCircleShape(math.max(dx,dy)*2)
-  newRange.fixture = love.physics.newFixture(newRange.body, newRange.shape) --attach shape to body
-  newRange.fixture:setSensor(true)
+  local newSensor = sensor.new(body, shape)
 
-  new.inRange = {}
+  newSensor.fixture:setCategory(2)
 
-  function newRange.beginContact(b,coll)
-    if not (b == new) then
-      table.insert(new.inRange, b)
-    end
-  end
+  newSensor.fixture:setMask(1,3) -- do not shoot controllpoints or cursors
 
-  function newRange.endContact(b,coll)
-    for i,v in ipairs(new.inRange) do
-      if v == b then
-        table.remove(new.inRange,i)
-        return
-      end
-    end
-  end
-
-  fixtureObjects[newRange.fixture] = newRange
-  fixtureObjects[new.fixture] = new
-  table.insert(allObjects, new)
-  table.insert(allObjects, newRange)
-
-
-  new.fixture:setCategory(2)
-  newRange.fixture:setCategory(2)
-
-  newRange.fixture:setMask(1,3) -- do not shoot controllpoints or cursors
+  new.sensor = newSensor
 
   return new
-
 
 end
 
@@ -86,7 +64,7 @@ function wall:draw()
     love.graphics.circle("fill", self.body:getX() + i*5, self.body:getY(), 5, 5)
   end
 
-  love.graphics.print(#self.inRange, 200, 100)
+  love.graphics.print(count(self.sensor.inSensor), 200, 100)
 end
 
 function wall.beginContact(a,b,coll)
@@ -95,5 +73,8 @@ end
 function wall.endContact(a,b,coll)
 end
 
+function wall.shoot(player)
+  player.hp = player.hp - 1
+end
 
 return wall

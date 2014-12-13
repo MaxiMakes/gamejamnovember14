@@ -13,13 +13,17 @@ function sensor.new(body,shape)
   table.insert(allObjects,new)
   fixtureObjects[new.fixture] = new
 
+  new.inSensor = {}
+
   return new
 end
 
 function sensor:beginContact(b,coll)
+  self.inSensor[b] = true
 end
 
 function sensor:endContact(b,coll)
+  self.inSensor[b] = nil 
 end
 
 return sensor
