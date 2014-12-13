@@ -1,25 +1,21 @@
 local control = {}
 control.mt = { __index = control }
 
-local takeoverSpeed = 10
-
 local function defaultF(self)
   self.storage = self.storage + 10
   return self.storage
 end
 
-function control.new(x,y,dx,dy,f,interval)
+function control.new(x,y,dx,dy,f,interval, good)
   local newPoint = {}
   setmetatable(newPoint,control.mt)
 
-  --TODO: masken machen, damit das ganze nur mit spieler kollidiert
-
+  newPoint.good = good or "money"
   newPoint.storage = 0
   newPoint.t = 0
   newPoint.f = f or defaultF
   newPoint.interval = interval or 5
   newPoint.playersAround = {}
-  newPoint.ownership = 0
 
   newPoint.body = love.physics.newBody(world, x+dx/2, y+dy/2)
   newPoint.shape = love.physics.newRectangleShape(dx, dy)
@@ -45,26 +41,8 @@ function control:update(dt)
     self:f()
   end
 
-  --[[
-  --react to players around
   if #self.playersAround == 1 then
-    local p = self.playersAround[1]
-    if p == self.owner then
-      player.storage = self.storage
-      self.storage = 0
-    elseif p == self.newGuy then
-      self.ownership = self.ownership + takeoverSpeed
-      if self.ownership > 0 then
-        self.owner = p
-      end
-    else
-      self.newGuy = player
-      self.ownership = takeoverSpeed
-    end
-  end
-  --]]
-  if #self.playersAround == 1 and self.playersAround[1].money then
-    self.playersAround[1].money = self.playersAround[1].money + self.storage
+    self.playersAround[1][self.good] = self.playersAround[1][self.good] + self.storage
     self.storage = 0
   end
 end
