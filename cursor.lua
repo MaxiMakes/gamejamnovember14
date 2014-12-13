@@ -32,6 +32,9 @@ function cursor.new(player)
   table.insert(allObjects, newCursor)
   fixtureObjects[newCursor.fixture] = newCursor
 
+  newCursor.fixture:setCategory(3)
+  newCursor.fixture:setMask(1,3,4) -- do not collide with controllpoints, cursors or players
+
   return newCursor
 end
 

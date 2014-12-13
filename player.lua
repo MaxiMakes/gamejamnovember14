@@ -84,6 +84,8 @@ function player.new(pname, px , py, i)
   table.insert(allObjects, newPlayer)
   table.insert(players, newPlayer)
 
+  newPlayer.fix:setCategory(4)
+
   return newPlayer
 end
 

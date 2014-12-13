@@ -58,6 +58,12 @@ function wall.new(x,y,dx,dy,player)
     table.insert(allObjects, new)
     table.insert(allObjects, newRange)
 
+
+    new.fixture:setCategory(2)
+    newRange.fixture:setCategory(2)
+
+    newRange.fixture:setMask(1,3) -- do not shoot controllpoints or cursors
+
     return new
 
   end

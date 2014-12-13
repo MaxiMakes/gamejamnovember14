@@ -26,6 +26,8 @@ function control.new(x,y,dx,dy,f,interval)
   newPoint.fixture = love.physics.newFixture(newPoint.body, newPoint.shape) --attach shape to body
   newPoint.fixture:setSensor(true)
 
+  newPoint.fixture:setCategory(1)
+  newPoint.fixture:setMask(3) -- do not collide with cursors
 
   fixtureObjects[newPoint.fixture] = newPoint
   table.insert(allObjects,newPoint)
