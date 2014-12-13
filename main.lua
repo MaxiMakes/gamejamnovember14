@@ -44,6 +44,9 @@ function love.update(dt)
     v:update(dt)
   end
 
+  for i,v in ipairs(walls) do
+    v:update(dt)
+  end
   --loop for player actions
 
   for i, v in ipairs(players) do

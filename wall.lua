@@ -39,6 +39,9 @@ function wall.new(x,y,dx,dy,player)
   new.isWall = true
   new.minions = 0
   new.blocks = blocks
+  new.timer = 0
+
+  new.fixture:setCategory(2)
 
   local body = love.physics.newBody(world, new.body:getX(), new.body:getY())
   local shape = love.physics.newCircleShape(math.max(dx,dy)*2)
@@ -73,8 +76,17 @@ end
 function wall.endContact(a,b,coll)
 end
 
-function wall.shoot(player)
-  player.hp = player.hp - 1
+function wall:update(dt)
+  self.timer = self.timer + dt
+
+  if self.timer > 1 then
+    self.timer = 0
+
+    local n = next(self.sensor.inSensor)
+    if n then
+      n:getDamaged(1)
+    end
+  end
 end
 
 return wall

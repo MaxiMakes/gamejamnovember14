@@ -4,7 +4,7 @@ local player = {}
 player.radius = 16
 player.density = 1
 player.playernames = {}
-player.money = 100
+player.money = 10000
 player.minions = 10
 player.speed = 10000
 local counter = 1
@@ -51,7 +51,6 @@ end
 
 function player.new(pname, px , py, i)
   local newPlayer = {}
-  setmetatable(newPlayer, player.mt)
   --old--
   player[pname] = {}
   table.insert(player.playernames, pname)
@@ -80,6 +79,9 @@ function player.new(pname, px , py, i)
 
   newPlayer.beginContact = function () end
   newPlayer.endContact = function () end
+  function newPlayer:getDamaged(x)
+    self.minions = self.minions - x
+  end
 
   table.insert(allObjects, newPlayer)
   table.insert(players, newPlayer)
