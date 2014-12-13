@@ -4,7 +4,7 @@ local cursor = require 'cursor'
 local controller = require 'controller'
 
 function round(num, mult)
-  mult = mult or 30
+  mult = mult or 10
   return math.floor(num / mult + 0.5 ) * mult
 end
 
@@ -52,10 +52,12 @@ function love.update(dt)
     if v.joystick:isDown("c") then
       player.buy(v)
     end
+    --[[
     if v.joystick:isDown("a") then
       v.cursor.body:setX(v.body:getX())
       v.cursor.body:setY(v.body:getY())
     end
+    --]]
     player.move(jx*player.speed*dt, jy*player.speed*dt, v)
   end
 

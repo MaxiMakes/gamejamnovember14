@@ -64,10 +64,7 @@ function cursor:update(dt)
     self.isPlacingWall = true
   end
 
-  if j:isDown("a") and self.targetWall and self.player.minions > 0 then
-    self.targetWall.minions = self.targetWall.minions + 1
-    self.player.minions = self.player.minions -1
-  end
+  self:placeMinion(self.targetWall)
 
   -- später if love.physics.getDistance(self.fixture, self.player.fixture) > maxDistance then
 end
@@ -90,6 +87,13 @@ end
 function cursor:endContact(b, coll)
   if self.targetWall == b then
     self.targetWall = nil
+  end
+end
+
+function cursor:placeMinion(wall)
+  if self.player.joystick:isDown("a") and wall and self.player.minions > 0 and wall.blocks > wall.minions then
+    wall.minions = wall.minions + 1
+    self.player.minions = self.player.minions -1
   end
 end
 
