@@ -23,7 +23,7 @@ function control.new(x,y,dx,dy,f,interval, good)
   newPoint.fixture:setSensor(true)
 
   newPoint.fixture:setCategory(1)
-  newPoint.fixture:setMask(3) -- do not collide with cursors
+  newPoint.fixture:setMask(2,3) -- do not collide with cursors and walls
 
   fixtureObjects[newPoint.fixture] = newPoint
   table.insert(allObjects,newPoint)
@@ -77,6 +77,10 @@ function control:endContact(b, coll)
       table.remove(self.playersAround,i)
     end
   end
+end
+
+function control:getDamaged()
+  print("controlpoint Attacked")
 end
 
 return control

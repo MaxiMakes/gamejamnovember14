@@ -128,8 +128,6 @@ function love.draw()
     player.draw()
   end
 
-
-
 end
 
 function love.keypressed(key, isrepeat)
@@ -155,10 +153,8 @@ end
 function beginContact(a, b, coll)
   local v = fixtureObjects[a]
   local w = fixtureObjects[b]
-  --print(v)
   v:beginContact(w,coll)
   w:beginContact(v,coll)
-
 end
 
 function endContact(a, b, coll)

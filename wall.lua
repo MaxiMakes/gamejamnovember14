@@ -33,6 +33,7 @@ function wall.new(x,y,dx,dy,player)
   new.shape = love.physics.newRectangleShape(dx, dy)
   new.fixture = love.physics.newFixture(new.body, new.shape) --attach shape to body
   fixtureObjects[new.fixture] = new
+  table.insert(allObjects,new)
 
   new.hp = dx * dy
   new.player = player
@@ -43,16 +44,23 @@ function wall.new(x,y,dx,dy,player)
 
   new.fixture:setCategory(2)
 
-  local body = love.physics.newBody(world, new.body:getX(), new.body:getY())
+  local body = love.physics.newBody(world, new.body:getX(), new.body:getY(), "dynamic")
   local shape = love.physics.newCircleShape(math.max(dx,dy)*2)
 
-  local newSensor = sensor.new(body, shape)
+  local newSensor = sensor.new(body, shape, function(x) return player ~= x.player end)
 
-  newSensor.fixture:setCategory(2)
+  newSensor.fixture:setCategory(5)
 
-  newSensor.fixture:setMask(1,3) -- do not shoot controllpoints or cursors
+  newSensor.fixture:setMask(1,3, 5) -- do not shoot controllpoints or cursors or sensors
+
+  newSensor.isSensor = true
 
   new.sensor = newSensor
+  new.sensorShape = shape
+  new.sensorBody = body
+
+  fixtureObjects[newSensor.fixture] = newSensor
+  table.insert(allObjects,newSensor)
 
   return new
 
@@ -61,6 +69,7 @@ end
 function wall:draw()
   love.graphics.setColor(self.player.color)
   love.graphics.polygon("fill", self.body:getWorldPoints(self.shape:getPoints()))
+  love.graphics.circle("line", self.sensorBody:getX(), self.sensorBody:getY(), self.sensorShape:getRadius())
   love.graphics.setColor(255,255,255)
 
   for i = 1, self.minions do
@@ -82,11 +91,15 @@ function wall:update(dt)
   if self.timer > 1 then
     self.timer = 0
 
-    local n = next(self.sensor.inSensor)
+    local n, k = next(self.sensor.inSensor)
     if n then
       n:getDamaged(1)
     end
   end
+end
+
+function wall:getDamaged(x)
+  print("MAUER ATTACKIERT")
 end
 
 return wall

@@ -97,4 +97,8 @@ function cursor:placeMinion(wall)
   end
 end
 
+function cursor:getDamaged()
+  print("Cursor Attacked")
+end
+
 return cursor
