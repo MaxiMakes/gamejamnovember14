@@ -1,12 +1,14 @@
 local cursor = require 'cursor'
+local sensor = require 'sensor'
 local player = {}
 --config
-player.radius = 16
+player.radius = 10
 player.density = 1
 player.playernames = {}
 player.money = 10000
 player.minions = 10
 player.speed = 10000
+player.range = player.radius * 3 -- + 999999999
 local counter = 1
 local minioncost = 1
 player.image = love.graphics.newImage("player.png")
@@ -33,6 +35,18 @@ function player.load()
   end
 end
 
+function player.damage(p)
+  damage = p.minions
+
+
+  return damage
+end
+
+function player.shoot(targetWall, p)
+    targetWall.minions = targetWall.minions - player.damage(p)
+end
+
+
 function player:update(dt)
   for i, v in ipairs(players) do
       v.cursor:update(dt)
@@ -58,13 +72,27 @@ function player.new(pname, px , py, i)
   newPlayer.name = pname
   newPlayer.shape = love.physics.newCircleShape(player.radius)
   newPlayer.body = love.physics.newBody(world, px, py, "dynamic")
-  newPlayer.fix = love.physics.newFixture(newPlayer.body, newPlayer.shape, player.density)
+  newPlayer.fixture = love.physics.newFixture(newPlayer.body, newPlayer.shape, player.density)
   newPlayer.body:setLinearDamping(5)
   newPlayer.money = player.money
   newPlayer.minions = player.minions
   newPlayer.color = colors[i]
   newPlayer.image = love.graphics.newImage("player.png")
-  fixtureObjects[newPlayer.fix] = newPlayer
+  fixtureObjects[newPlayer.fixture] = newPlayer
+  --add a sensor to the Player
+  --local body = love.physics.newBody(world, newPlayer.body:getX(), newPlayer.body:getY(), "dynamic")
+  local body = love.physics.newBody(world, newPlayer.body:getX(), newPlayer.body:getY(), "dynamic")
+  local shape = love.physics.newCircleShape(player.range)
+
+  local newSensor = sensor.new(body, shape)
+
+  newSensor.fixture:setCategory(4)
+
+  newSensor.fixture:setMask(1,3) -- do not shoot controllpoints or cursors
+
+  newPlayer.sensor = newSensor
+
+
 
 
   --assings a free controller to a player
@@ -86,7 +114,7 @@ function player.new(pname, px , py, i)
   table.insert(allObjects, newPlayer)
   table.insert(players, newPlayer)
 
-  newPlayer.fix:setCategory(4)
+  newPlayer.fixture:setCategory(4)
 
   return newPlayer
 end

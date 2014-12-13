@@ -3,6 +3,8 @@ local control = require 'controlpoint'
 local cursor = require 'cursor'
 local controller = require 'controller'
 
+local colliding = {}
+
 function round(num, mult)
   mult = mult or 10
   return math.floor(num / mult + 0.5 ) * mult
@@ -19,7 +21,7 @@ function love.load()
   --joysticks = love.joystick.getJoysticks()
   print( controller.newKeyboard("up","down","left","right","w","s","a","d","y","x","c") )
   --function controller.newKeyboard(up,down,left,right,up2,down2,left2,right2,a,b,c)
-  joysticks = { controller.newKeyboard("up","down","left","right","w","s","a","d","y","x","c") } 
+  joysticks = { controller.newKeyboard("up","down","left","right","w","s","a","d","y","x","c") }
 
   walls = {}
   players = {}
@@ -43,11 +45,34 @@ function love.update(dt)
   for i,v in ipairs(controlPoints) do
     v:update(dt)
   end
-
+  for i,v in ipairs(players) do
+    v.sensor.body:setX(v.body:getX())
+    v.sensor.body:setY(v.body:getY())
+    --print(v.sensor.body:getX())
+  end
   for i,v in ipairs(walls) do
     v:update(dt)
   end
   --loop for player actions
+
+    --loop for damage player vs wall
+  for i, p in ipairs(players) do
+    for j, w in ipairs(walls) do
+      print("vor if"..w.minions)
+      distance, _, _, _, _ = love.physics.getDistance(p.fixture, w.fixture)
+      if distance < player.range then
+        player.shoot(w,p)
+        print("nach if"..w.minions)
+        break
+      end
+      if p.sensor.inSensor[w] == true then
+        player.shoot(w,p)
+        print("nach if"..w.minions)
+        break
+      end
+    end
+  end
+
 
   for i, v in ipairs(players) do
     jx , jy ,_,_ = v.joystick:getAxes()
@@ -119,8 +144,10 @@ end
 function beginContact(a, b, coll)
   local v = fixtureObjects[a]
   local w = fixtureObjects[b]
+  --print(v)
   v:beginContact(w,coll)
   w:beginContact(v,coll)
+
 end
 
 function endContact(a, b, coll)
