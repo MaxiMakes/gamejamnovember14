@@ -4,8 +4,12 @@ wall.cost = 10
 
 function wall.new(x,y,dx,dy,player)
   local x,y,dx,dy = round(x),round(y),round(dx),round(dy)
-
-  if(player.money >= wall.cost) then
+  print(dx,dy)
+  if player.money >= wall.cost*((math.abs(dy)/30)*(math.abs(dx)/30))then
+    player.money = player.money - wall.cost*((math.abs(dy)/30)*(math.abs(dx)/30))
+  else
+    return nil
+  end
     if dx < 0 then
       x = x + dx
       dx = -dx
@@ -51,7 +55,6 @@ function wall.new(x,y,dx,dy,player)
         end
       end
     end
-    player.money = player.money - wall.cost
 
     fixtureObjects[newRange.fixture] = newRange
     fixtureObjects[new.fixture] = new
@@ -60,7 +63,7 @@ function wall.new(x,y,dx,dy,player)
 
     return new
 
-  end
+
 end
 
 function wall:draw()
