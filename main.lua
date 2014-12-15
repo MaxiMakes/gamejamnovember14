@@ -2,8 +2,7 @@ local player = require 'player'
 local control = require 'controlpoint'
 local cursor = require 'cursor'
 local controller = require 'controller'
-
-local colliding = {}
+local globalcd = 1 
 
 function round(num, mult)
   mult = mult or 10
@@ -29,7 +28,7 @@ function love.load()
   --creating player
 
   player.load()
-
+  
 
   love.graphics.setBackgroundColor(104, 136, 248) --set the background color to a nice blue
   love.window.setMode(650, 650) --set the window dimensions to 650 by 650 with no fullscreen, vsync on,
@@ -67,8 +66,10 @@ function love.update(dt)
   for i, p in ipairs(players) do
     for j, w in ipairs(walls) do
       distance, _, _, _, _ = love.physics.getDistance(p.fixture, w.fixture)
-      if distance < player.range and w.player ~= p then
+      p.cd = p.cd + dt
+      if distance < player.range and w.player ~= p and p.cd > globalcd  then
         player.shoot(w,p)
+        p.cd = 0
         break
       end
     end
@@ -76,8 +77,11 @@ function love.update(dt)
   for i, p in ipairs(players) do
     for j, w in ipairs(players) do
       distance, _, _, _, _ = love.physics.getDistance(p.fixture, w.fixture)
-      if distance < player.range and w ~= v then
+      p.cd = p.cd + dt
+      if distance < player.range and w ~= p and p.cd >= globalcd then
+ 
         player.shoot(w,p)
+        p.cd = 0 
         break
       end
     end

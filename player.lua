@@ -2,6 +2,7 @@ local cursor = require 'cursor'
 local sensor = require 'sensor'
 local player = {}
 --config
+
 player.radius = 10
 player.density = 1
 player.playernames = {}
@@ -42,8 +43,10 @@ function player.damage(p)
   return damage
 end
 
-function player.shoot(targetWall, p)
-    targetWall.minions = targetWall.minions - player.damage(p)
+function player.shoot(target, p)
+  if target.minions > 0 or player.minions > 0 then
+    target.minions = target.minions - player.damage(p)
+  end
 end
 
 
@@ -69,6 +72,7 @@ function player.new(pname, px , py, i)
   player[pname] = {}
   table.insert(player.playernames, pname)
   --old--
+  newPlayer.cd = 1 --stores the cooldown of a player
   newPlayer.name = pname
   newPlayer.shape = love.physics.newCircleShape(player.radius)
   newPlayer.body = love.physics.newBody(world, px, py, "dynamic")
